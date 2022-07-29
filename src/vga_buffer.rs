@@ -100,9 +100,9 @@ impl Writer {
     pub fn write_string(&mut self, s: &str) {
         for byte in s.bytes() {
             match byte {
-                /// Valid range of ASCII characters or newline literal
+                // Valid range of ASCII characters or newline literal
                 0x20..=0x7e | b'\n' => self.write_byte(byte),
-                /// Else, writes 0xfe to buffer
+                // Else, writes 0xfe to buffer
                 _ => self.write_byte(0xfe),
             }
         }
@@ -112,7 +112,7 @@ impl Writer {
         for row in 1..BUFFER_HEIGHT {
             for col in 0..BUFFER_WIDTH {
                 let character = self.buffer.chars[row][col].read();
-                self.buffer.chars[row - 1].write(character);
+                self.buffer.chars[row - 1][col].write(character);
             }
         }
         self.clear_row(BUFFER_HEIGHT - 1);
@@ -124,6 +124,9 @@ impl Writer {
             ascii_char: b' ',
             color_code: self.color_code
         };
+        for col in 0..BUFFER_WIDTH {
+            self.buffer.chars[row][col].write(blank_char);
+        }
     }
 
 }
